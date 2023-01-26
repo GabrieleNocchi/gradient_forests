@@ -14,17 +14,29 @@ do
 # make a VCF only with unlinked SNPs (LD r2 max 0.4)
 /data/programs/plink --vcf ID.vcf --allow-extra-chr --extract pruned.prune.in --double-id --recode vcf --out $FILE\_pruned
 
-/data/programs/vcftools_0.1.13/bin/vcftools --vcf $FILE\_pruned.vcf --012 --out snp
+perl header.pl $FILE\_pruned.vcf > header.txt
+perl random_draws.pl $FILE\_pruned.vcf > body.txt
+shuf -n 50000 body.txt > draws.txt
+
+cat header.txt draws.txt > 50k_SNPs.vcf
+
+
+/data/programs/vcftools_0.1.13/bin/vcf-sort 50k_SNPs.vcf > sorted_50k_SNP.vcf
+
+/data/programs/vcftools_0.1.13/bin/vcftools --vcf sorted_50k_SNP.vcf --012 --out snp
 
 
 cut -f2- snp.012 | sed 's/-1/NA/g' >snp.temp
 sed 's/\t/_/' snp.012.pos | tr '\n' '\t' | sed 's/[[:space:]]*$//' >header
-paste <(echo "ID" | cat - snp.012.indv) <(echo "" | cat header - snp.temp) > snp.forR
+paste <(echo "ID" | cat - snp.012.indv) <(echo "" | cat header - snp.temp) > $FILE\_50k_unlined_snp.forR
 rm header snp.temp
 
 rm *log
 rm *nosex
-rm *vcf
+rm *.vcf
+rm header.txt
+rm body.txt
+rm draws.txt
 rm pruned.*
-
+rm snp*
 done

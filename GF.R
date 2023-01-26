@@ -1,6 +1,6 @@
 library(data.table)
 
-snp <- data.frame(fread("snp.forR"), row.names=1)
+snp <- data.frame(fread("*snp.forR"), row.names=1)
 
 library(raster)
 library(rgdal)
@@ -14,18 +14,12 @@ sample.coord <- sample.coord[,1:10]
 sample.coord
 
 
-extent <- c(min(sample.coord$Long) - 3, max(sample.coord$Long) +3 ,min(sample.coord$Lat) -3 ,max(sample.coord$Lat) +3)
+extent <- c(min(sample.coord$Long) - 5, max(sample.coord$Long) +5 ,min(sample.coord$Lat) -5 ,max(sample.coord$Lat) +5)
 clim.layer.crop <- crop(clim.layer, extent)
 
 pdf("clim.layer.BandA.pdf")
-plot(clim.layer,1:6,nc =2)
-plot(clim.layer, 7:12,nc =2)
-plot(clim.layer, 13:18,nc =2)
-plot(clim.layer, 19,nc =2)
-plot(clim.layer.crop,1:6,nc =2)
-plot(clim.layer.crop, 7:12,nc = 2)
-plot(clim.layer.crop, 13:18, nc =2)
-plot(clim.layer.crop, 19,nc =2)
+plot(clim.layer,1,nc =1)
+plot(clim.layer.crop,1,nc =1)
 dev.off()
 
 
@@ -33,6 +27,33 @@ crs.wgs <- "+proj=longlat +datum=WGS84 +no_defs +ellps=WGS84 +towgs84=0,0,0"  #d
 sample.coord.sp <- SpatialPointsDataFrame(sample.coord[,c('Long','Lat')], proj4string=CRS(crs.wgs), data=sample.coord)
 
 clim.points <- extract(clim.layer.crop, sample.coord.sp)  #extracts the data for each point (projection of climate layer and coordinates must match)
+
+
+cor_matrix <- cor(clim.points)
+
+pdf("var_corr.pdf")
+corrplot::corrplot(
+  cor,
+  order = "original",
+  type = "upper", diag = T,
+  tl.cex = 0.4,
+  tl.srt=45, addCoef.col = "darkgray", addCoefasPercent = T
+  )
+dev.off()
+
+
+cor_matrix_rm <- cor_matrix                  # Modify correlation matrix
+cor_matrix_rm[upper.tri(cor_matrix_rm)] <- 0
+diag(cor_matrix_rm) <- 0
+cor_matrix_rm
+
+data_new <- clim.points[ , !apply(cor_matrix_rm,    # Remove highly correlated variables
+                           2,
+                           function(x) any(x > 0.7))]
+head(data_new)                               # Print updated data frame
+
+clim.points <- data_new
+
 clim.points <- cbind(sample.coord, clim.points)  #combines the sample coordinates with the climate data points
 write.table(clim.points, "clim.points", sep="\t", quote=F, row.names=F)  #save the table for later use
 clim.points
@@ -52,7 +73,7 @@ env.gf <- cbind(clim.points[,11:29], pcnm.keep)
 
 
 maxLevel <- log2(0.368*nrow(env.gf)/2)
-gf <- gradientForest(cbind(env.gf, snp), predictor.vars=colnames(env.gf), response.vars=colnames(snp), ntree=500, maxLevel=maxLevel, trace=T, corr.threshold=0.50)
+gf <- gradientForest(cbind(env.gf, snp), predictor.vars=colnames(env.gf), response.vars=colnames(snp), ntree=2000, maxLevel=maxLevel, trace=T, corr.threshold=0.50)
 
 
 pdf("GF_VariableImportance.pdf")
