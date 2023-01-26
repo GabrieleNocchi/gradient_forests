@@ -41,18 +41,18 @@ corrplot::corrplot(
   )
 dev.off()
 
-
-cor_matrix_rm <- cor_matrix                  # Modify correlation matrix
-cor_matrix_rm[upper.tri(cor_matrix_rm)] <- 0
-diag(cor_matrix_rm) <- 0
-cor_matrix_rm
-
-data_new <- clim.points[ , !apply(cor_matrix_rm,    # Remove highly correlated variables
-                           2,
-                           function(x) any(x > 0.7))]
-head(data_new)                               # Print updated data frame
-
-clim.points <- data_new
+### Remove correlated variables ???
+# cor_matrix_rm <- cor_matrix                  # Modify correlation matrix
+# cor_matrix_rm[upper.tri(cor_matrix_rm)] <- 0
+# diag(cor_matrix_rm) <- 0
+# cor_matrix_rm
+#
+# data_new <- clim.points[ , !apply(cor_matrix_rm,    # Remove highly correlated variables
+#                            2,
+#                            function(x) any(x > 0.7))]
+# head(data_new)                               # Print updated data frame
+#
+# clim.points <- data_new
 
 clim.points <- cbind(sample.coord, clim.points)  #combines the sample coordinates with the climate data points
 write.table(clim.points, "clim.points", sep="\t", quote=F, row.names=F)  #save the table for later use
@@ -95,6 +95,9 @@ dev.off()
 
 clim.land <- extract(clim.layer.crop, 1:ncell(clim.layer.crop), df = TRUE)
 clim.land <- na.omit(clim.land)
+### Remove correlated variables ???
+# col_to_keep <- colnames(data_new)
+# clim.land <- clim.land[ , (names(clim.land) %in% col_to_keep)]
 pred <- predict(gf, clim.land[,-1])  #note the removal of the cell ID column with [,-1])
 
 
