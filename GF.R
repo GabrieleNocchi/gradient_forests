@@ -1,6 +1,6 @@
 library(data.table)
-
-snp <- data.frame(fread("*snp.forR"), row.names=1)
+library(corrplot)
+snp <- data.frame(fread("kubota_ahalleri.vcf.gz_50k_unlined_snp.forR"), row.names=1)
 
 library(raster)
 library(rgdal)
@@ -33,7 +33,7 @@ cor_matrix <- cor(clim.points)
 
 pdf("var_corr.pdf")
 corrplot::corrplot(
-  cor,
+  cor_matrix,
   order = "original",
   type = "upper", diag = T,
   tl.cex = 0.4,
@@ -68,7 +68,7 @@ pcnm.keep
 
 
 library(gradientForest)
-env.gf <- cbind(clim.points[,11:29], pcnm.keep)
+env.gf <- cbind(clim.points[,11:ncol(clim.points)], pcnm.keep)
 
 
 
