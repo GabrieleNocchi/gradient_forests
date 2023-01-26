@@ -3,7 +3,7 @@ do
 
 # MAF 0.05 filter to analyse structure
 
-/data/programs/vcftools_0.1.13/bin/vcftools --gzvcf $FILE --max-missing 0.7 --maf 0.05 --minQ 30 --minGQ 20 --minDP 5 --max-alleles 2 --recode --recode-INFO-all
+/data/programs/vcftools_0.1.13/bin/vcftools --gzvcf $FILE --max-missing 1 --maf 0.05 --minQ 30 --minGQ 20 --minDP 5 --max-alleles 2 --recode --recode-INFO-all
 
 # Need to set SNPs IDs
 /data/programs/bcftools-1.9/bcftools annotate --set-id +'%CHROM\_%POS\_%REF\_%FIRST_ALT' out.recode.vcf --threads 4 -Ov -o ID.vcf
