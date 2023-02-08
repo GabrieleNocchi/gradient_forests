@@ -1,0 +1,5 @@
+a <- read.table("reformatted.txt", row.names = 1)
+b <- read.table("ID", h = T)
+c <- t(a)
+d <- cbind(b,c)
+write.table(d, file = "snp.forR", row.names = F, col.names = T, quote = F, sep = "\t")
