@@ -1,6 +1,6 @@
 library(data.table)
 library(corrplot)
-snp <- data.frame(fread("kubota_ahalleri.vcf.gz_50k_unlined_snp.forR"), row.names=1)
+snp <- data.frame(fread("snp.forR"), row.names=1)
 
 library(raster)
 library(rgdal)
