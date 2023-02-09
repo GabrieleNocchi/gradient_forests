@@ -23,7 +23,7 @@ NR == 1 {
 }' *.txt > reformatted.txt
 
 grep -v NA reformatted.txt > r1
-
+wc -l r1 > count.txt
 shuf -n 10000 r1 > r2
 rm r1
 mv r2 reformatted.txt
