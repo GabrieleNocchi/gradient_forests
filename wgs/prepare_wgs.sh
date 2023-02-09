@@ -18,6 +18,7 @@ do
 
 perl header.pl ID.vcf > header.txt
 perl random_draws.pl ID.vcf > body.txt
+wc -l body.txt > count.txt
 shuf -n 10000 body.txt > draws.txt
 
 cat header.txt draws.txt > 10k_SNPs.vcf
