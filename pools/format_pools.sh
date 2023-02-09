@@ -24,7 +24,7 @@ NR == 1 {
 
 grep -v NA reformatted.txt > r1
 
-shuf -n 10000 r > r2
+shuf -n 10000 r1 > r2
 rm r1
 mv r2 reformatted.txt
 
