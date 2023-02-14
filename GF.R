@@ -1,6 +1,7 @@
 library(data.table)
 library(corrplot)
-snp <- data.frame(fread("snp.forR"), row.names=1)
+file <- dir("./",pattern="*snp.forR")
+snp <- data.frame(fread(file), row.names=1)
 
 library(raster)
 library(rgdal)
@@ -26,7 +27,7 @@ dev.off()
 crs.wgs <- "+proj=longlat +datum=WGS84 +no_defs +ellps=WGS84 +towgs84=0,0,0"  #defines the spatial projection system that the points are in (usually WGS84)
 sample.coord.sp <- SpatialPointsDataFrame(sample.coord[,c('Long','Lat')], proj4string=CRS(crs.wgs), data=sample.coord)
 
-clim.points <- extract(clim.layer.crop, sample.coord.sp)  #extracts the data for each point (projection of climate layer and coordinates must match)
+clim.points <- extract(clim.layer, sample.coord.sp)  #extracts the data for each point (projection of climate layer and coordinates must match)
 
 
 cor_matrix <- cor(clim.points)
