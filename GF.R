@@ -81,7 +81,10 @@ pdf("GF_VariableImportance.pdf")
 plot(gf, plot.type = "O")
 dev.off()
 
-
+most_important <- names(importance(gf))[1:10]
+pdf("split_denisty_plot.pdf")
+plot(gf, plot.type = "S", imp.vars = most_important, leg.posn = "topright", cex.legend = 0.4, cex.axis = 0.6, cex.lab = 0.7, line.ylab = 0.9, par.args = list(mgp = c(1.5, 0.5, 0), mar = c(3.1, 1.5, 0.1, 1)))
+dev.off()
 
 by.importance <- names(importance(gf))
 
@@ -89,10 +92,13 @@ pdf("GF_TurnoverFunctions.pdf")
 plot(gf, plot.type = "C", imp.vars = by.importance, show.species = F, common.scale = T, cex.axis = 1, cex.lab = 1.2, line.ylab = 1, par.args = list(mgp = c(1.5, 0.5, 0), mar = c(2.5, 2, 2, 2), omi = c(0.2, 0.3, 0.2, 0.4)))
 dev.off()
 
+pdf("r2_fit_SNPs.pdf")
+plot(gf, plot.type = "P", show.names = F, horizontal = F, cex.axis = 1, cex.labels = 0.7, line = 2.5)
+dev.off()
 
-
-
-
+pdf("GF_TurnoverFunctions_bySNP.pdf")
+plot(gf, plot.type = "C", imp.vars = by.importance, show.overall = F, legend = T, leg.posn = "topleft", leg.nspecies = 5, cex.lab = 0.7, cex.legend = 0.4, cex.axis = 0.6, line.ylab = 0.9, par.args = list(mgp = c(1.5, 0.5, 0), mar = c(2.5, 1, 0.1, 0.5), omi = c(0, 0.3, 0, 0)))
+dev.off()
 
 clim.land <- extract(clim.layer.crop, 1:ncell(clim.layer.crop), df = TRUE)
 clim.land <- na.omit(clim.land)
