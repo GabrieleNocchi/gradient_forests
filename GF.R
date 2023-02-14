@@ -81,7 +81,7 @@ pdf("GF_VariableImportance.pdf")
 plot(gf, plot.type = "O")
 dev.off()
 
-most_important <- names(importance(gf))[1:10]
+most_important <- names(importance(gf))
 pdf("split_denisty_plot.pdf")
 plot(gf, plot.type = "S", imp.vars = most_important, leg.posn = "topright", cex.legend = 0.4, cex.axis = 0.6, cex.lab = 0.7, line.ylab = 0.9, par.args = list(mgp = c(1.5, 0.5, 0), mar = c(3.1, 1.5, 0.1, 1)))
 dev.off()
