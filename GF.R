@@ -77,15 +77,15 @@ maxLevel <- log2(0.368*nrow(env.gf)/2)
 gf <- gradientForest(cbind(env.gf, snp), predictor.vars=colnames(env.gf), response.vars=colnames(snp), ntree=2000, maxLevel=maxLevel, trace=T, corr.threshold=0.50)
 
 
+by.importance <- names(importance(gf))
 pdf("GF_VariableImportance.pdf")
 plot(gf, plot.type = "O")
 dev.off()
 
 pdf("split_denisty_plot.pdf")
-plot(gf, plot.type = "S")
+par(mgp = c(2, 0.75, 0))
+plot(gf, plot.type = "S", imp.vars = by.importance,leg.posn = "topright", cex.legend = 0.4, cex.axis = 0.6,cex.lab = 0.7, line.ylab = 0.9, par.args = list(mgp = c(1.5,0.5, 0), mar = c(3.1, 1.5, 0.1, 1)))
 dev.off()
-
-by.importance <- names(importance(gf))
 
 pdf("GF_TurnoverFunctions.pdf")
 plot(gf, plot.type = "C", imp.vars = by.importance, show.species = F, common.scale = T, cex.axis = 1, cex.lab = 1.2, line.ylab = 1, par.args = list(mgp = c(1.5, 0.5, 0), mar = c(2.5, 2, 2, 2), omi = c(0.2, 0.3, 0.2, 0.4)))
