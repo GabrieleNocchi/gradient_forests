@@ -43,4 +43,5 @@ rm *.vcf
 rm header.txt
 rm body.txt
 rm draws.txt
+rm snp*
 done
