@@ -31,22 +31,16 @@ cat header.txt draws.txt > 10k_SNPs.vcf
 
 cut -f2- snp.012 | sed 's/-1/NA/g' >snp.temp
 sed 's/\t/_/' snp.012.pos | tr '\n' '\t' | sed 's/[[:space:]]*$//' >header
-paste <(echo "ID" | cat - snp.012.indv) <(echo "" | cat header - snp.temp) > $FILE\_10k_unlined_snp.forR
+paste <(echo "ID" | cat - snp.012.indv) <(echo "" | cat header - snp.temp) > $FILE\_10k_unlinked_snp.forR
 rm header snp.temp
 
 
-sed 's/\t1\t/\t0.5\t/g' $FILE\_10k_unlined_snp.forR > tmp
-sed 's/\t2\t/\t1\t/g' tmp > final.forR
-mv final.forR $FILE\_10k_unlined_snp.forR
 
 
-rm tmp
+
 rm *log
-rm *nosex
 rm *.vcf
 rm header.txt
 rm body.txt
 rm draws.txt
-rm pruned.*
-rm snp*
 done
