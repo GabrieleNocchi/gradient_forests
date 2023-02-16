@@ -59,19 +59,20 @@ clim.points <- cbind(sample.coord, clim.points)  #combines the sample coordinate
 write.table(clim.points, "clim.points", sep="\t", quote=F, row.names=F)  #save the table for later use
 clim.points
 
-library(vegan)
-coord <- clim.points[,c("Long","Lat")]
-pcnm <- pcnm(dist(coord))  #this generates the PCNMs, you could stop here if you want all of them
-keep <- round(length(which(pcnm$value > 0))/2)
-pcnm.keep <- scores(pcnm)[,1:keep]  #keep half of positive ones as suggested by some authors
-pcnm.keep
-
-
-
+# library(vegan)
+# coord <- clim.points[,c("Long","Lat")]
+# pcnm <- pcnm(dist(coord))  #this generates the PCNMs, you could stop here if you want all of them
+# keep <- round(length(which(pcnm$value > 0))/2)
+# pcnm.keep <- scores(pcnm)[,1:keep]  #keep half of positive ones as suggested by some authors
+# pcnm.keep
+#
+#
+#
+# library(gradientForest)
+# env.gf <- cbind(clim.points[,11:ncol(clim.points)], pcnm.keep)
 library(gradientForest)
-env.gf <- cbind(clim.points[,11:ncol(clim.points)], pcnm.keep)
-
-
+coord <- clim.points[,c("Long","Lat")]
+env.gf <- cbind(clim.points[,11:ncol(clim.points)], coord)
 
 maxLevel <- log2(0.368*nrow(env.gf)/2)
 gf <- gradientForest(cbind(env.gf, snp), predictor.vars=colnames(env.gf), response.vars=colnames(snp), ntree=2000, maxLevel=maxLevel, trace=T, corr.threshold=0.50)
