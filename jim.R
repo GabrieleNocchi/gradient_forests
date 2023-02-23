@@ -21,4 +21,4 @@ sampled_cols <- sample(cols, 10000, replace = FALSE)
 # Subset the data frame with the sampled columns
 sampled_df <- df_reshaped[, c("ID", sampled_cols)]
 
-write.table(sampled_df, file ="test.txt", row.names = F, quote =F, sep ="\t")
+write.table(sampled_df, file ="snp.forR", row.names = F, quote =F, sep ="\t")
