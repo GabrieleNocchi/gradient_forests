@@ -1,3 +1,4 @@
+
 library(data.table)
 library(corrplot)
 file <- dir("./",pattern="*snp.forR")
@@ -8,14 +9,17 @@ library(rgdal)
 clim.list <- dir("./climate_data/", full.names=T, pattern='.tif')  #makes list of file paths for each layer
 clim.layer <-  stack(clim.list)  #stacks the layers into a single object
 
-
-sample.coord <-read.table("sampling_data.csv", header=F, stringsAsFactors=F, sep = ",")
-colnames(sample.coord) <- c("Taxon_name","Pop_ID","Sample_name","Country","Pool_Size","Lat","Long","Alt","Author","Data_type")
-sample.coord <- sample.coord[,1:10]
-sample.coord
+v <- rownames(snp)
+lat <- sapply(strsplit(v, "_"), "[", 1)
+long <- sapply(strsplit(v, "_"), "[", 2)
 
 
-extent <- c(min(sample.coord$Long) - 5, max(sample.coord$Long) +5 ,min(sample.coord$Lat) -5 ,max(sample.coord$Lat) +5)
+
+
+sample.coord <- cbind(as.numeric(long),as.numeric(lat))
+colnames(sample.coord) <- c("Long","Lat")
+sample.coord <- as.data.frame(sample.coord)
+extent <- c(min(sample.coord$Long) - 2.5, max(sample.coord$Long) + 2.5 ,min(sample.coord$Lat) - 2.5 ,max(sample.coord$Lat) + 2.5)
 clim.layer.crop <- crop(clim.layer, extent)
 
 pdf("clim.layer.BandA.pdf")
@@ -42,7 +46,7 @@ corrplot::corrplot(
   )
 dev.off()
 
-### Remove correlated variables ???
+### Remove correlated variables
 # cor_matrix_rm <- cor_matrix                  # Modify correlation matrix
 # cor_matrix_rm[upper.tri(cor_matrix_rm)] <- 0
 # diag(cor_matrix_rm) <- 0
@@ -59,6 +63,7 @@ clim.points <- cbind(sample.coord, clim.points)  #combines the sample coordinate
 write.table(clim.points, "clim.points", sep="\t", quote=F, row.names=F)  #save the table for later use
 clim.points
 
+# If we want PCNM vars rather than Long and Lat
 # library(vegan)
 # coord <- clim.points[,c("Long","Lat")]
 # pcnm <- pcnm(dist(coord))  #this generates the PCNMs, you could stop here if you want all of them
@@ -70,9 +75,11 @@ clim.points
 #
 # library(gradientForest)
 # env.gf <- cbind(clim.points[,11:ncol(clim.points)], pcnm.keep)
+
+
 library(gradientForest)
 coord <- clim.points[,c("Long","Lat")]
-env.gf <- cbind(clim.points[,11:ncol(clim.points)], coord)
+env.gf <- cbind(clim.points[,3:ncol(clim.points)], coord)
 
 maxLevel <- log2(0.368*nrow(env.gf)/2)
 gf <- gradientForest(cbind(env.gf, snp), predictor.vars=colnames(env.gf), response.vars=colnames(snp), ntree=2000, maxLevel=maxLevel, trace=T, corr.threshold=0.50)
@@ -96,15 +103,23 @@ pdf("r2_fit_SNPs.pdf")
 plot(gf, plot.type = "P", show.names = F, horizontal = F, cex.axis = 1, cex.labels = 0.7, line = 2.5)
 dev.off()
 
+# pdf("GF_TurnoverFunctions_bySNP.pdf")
+# y_range <- range(gf$Y, na.rm = TRUE)
+# plot(gf, plot.type = "C", imp.vars = by.importance, show.overall = F, legend = T, leg.posn = "topleft", leg.nspecies = 5, cex.lab = 0.7, cex.legend = 0.4, cex.axis = 0.6, line.ylab = 0.9, par.args = list(mgp = c(1.5, 0.5, 0), mar = c(2.5, 1, 0.1, 0.5), omi = c(0, 0.3, 0, 0)), ylim = y_range)
+#
+# dev.off()
+
 pdf("GF_TurnoverFunctions_bySNP.pdf")
 plot(gf, plot.type = "C", imp.vars = by.importance, show.overall = F, legend = T, leg.posn = "topleft", leg.nspecies = 5, cex.lab = 0.7, cex.legend = 0.4, cex.axis = 0.6, line.ylab = 0.9, par.args = list(mgp = c(1.5, 0.5, 0), mar = c(2.5, 1, 0.1, 0.5), omi = c(0, 0.3, 0, 0)))
 dev.off()
 
 clim.land <- extract(clim.layer.crop, 1:ncell(clim.layer.crop), df = TRUE)
 clim.land <- na.omit(clim.land)
+
 ### Remove correlated variables ???
 # col_to_keep <- colnames(data_new)
 # clim.land <- clim.land[ , (names(clim.land) %in% col_to_keep)]
+
 pred <- predict(gf, clim.land[,-1])  #note the removal of the cell ID column with [,-1])
 
 
