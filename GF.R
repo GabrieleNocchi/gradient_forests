@@ -85,6 +85,27 @@ maxLevel <- log2(0.368*nrow(env.gf)/2)
 gf <- gradientForest(cbind(env.gf, snp), predictor.vars=colnames(env.gf), response.vars=colnames(snp), ntree=2000, maxLevel=maxLevel, trace=T, corr.threshold=0.50)
 
 
+gf_result <- as.data.frame(gf$result)
+write.table(gf_result, file = "gf_result.txt", sep = "\t", row.names = TRUE, quote = FALSE)
+
+gf_imp <- as.data.frame(gf$overall.imp)
+write.table(gf_imp, file = "gf_imp.txt", sep = "\t", row.names = TRUE, quote = FALSE)
+
+gf_imp2 <- as.data.frame(gf$overall.imp2)
+write.table(gf_imp2, file = "gf_imp2.txt", sep = "\t", row.names = TRUE, quote = FALSE)
+
+gf_imp_rsq <- as.data.frame(gf$imp.rsq)
+write.table(gf_imp_rsq, file = "gf_imp_rsq.txt", sep = "\t", row.names = TRUE, quote = FALSE)
+
+gf_res <- as.data.frame(gf$res)
+write.table(gf_res, file = "gf_res.txt", sep = "\t", row.names = FALSE, quote = FALSE)
+
+gf_res_u <- as.data.frame(gf$res.u)
+write.table(gf_res_u, file = "gf_res_u.txt", sep = "\t", row.names = FALSE, quote = FALSE)
+
+
+
+
 by.importance <- names(importance(gf))
 pdf("GF_VariableImportance.pdf")
 plot(gf, plot.type = "O")
