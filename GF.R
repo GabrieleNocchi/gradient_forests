@@ -6,7 +6,7 @@ snp <- data.frame(fread(file), row.names=1)
 
 library(raster)
 library(rgdal)
-clim.list <- dir("./climate_data/", full.names=T, pattern='.tif')  #makes list of file paths for each layer
+clim.list <- dir("/home/gabnoc/scratch/climate_data/", full.names=T, pattern='.tif')  #makes list of file paths for each layer
 clim.layer <-  stack(clim.list)  #stacks the layers into a single object
 
 v <- rownames(snp)
@@ -111,10 +111,10 @@ pdf("GF_VariableImportance.pdf")
 plot(gf, plot.type = "O")
 dev.off()
 
-pdf("split_denisty_plot.pdf")
-par(mgp = c(2, 0.75, 0))
-plot(gf, plot.type = "S", imp.vars = by.importance,leg.posn = "topright", cex.legend = 0.4, cex.axis = 0.6,cex.lab = 0.7, line.ylab = 0.9, par.args = list(mgp = c(1.5,0.5, 0), mar = c(3.1, 1.5, 0.1, 1)))
-dev.off()
+#pdf("split_denisty_plot.pdf")
+#par(mgp = c(2, 0.75, 0))
+#plot(gf, plot.type = "S", imp.vars = by.importance,leg.posn = "topright", cex.legend = 0.4, cex.axis = 0.6,cex.lab = 0.7, line.ylab = 0.9, par.args = list(mgp = c(1.5,0.5, 0), mar = c(3.1, 1.5, 0.1, 1)))
+#dev.off()
 
 pdf("GF_TurnoverFunctions.pdf")
 plot(gf, plot.type = "C", imp.vars = by.importance, show.species = F, common.scale = T, cex.axis = 1, cex.lab = 1.2, line.ylab = 1, par.args = list(mgp = c(1.5, 0.5, 0), mar = c(2.5, 2, 2, 2), omi = c(0.2, 0.3, 0.2, 0.4)))
@@ -130,9 +130,9 @@ dev.off()
 #
 # dev.off()
 
-pdf("GF_TurnoverFunctions_bySNP.pdf")
-plot(gf, plot.type = "C", imp.vars = by.importance, show.overall = F, legend = T, leg.posn = "topleft", leg.nspecies = 5, cex.lab = 0.7, cex.legend = 0.4, cex.axis = 0.6, line.ylab = 0.9, par.args = list(mgp = c(1.5, 0.5, 0), mar = c(2.5, 1, 0.1, 0.5), omi = c(0, 0.3, 0, 0)))
-dev.off()
+#pdf("GF_TurnoverFunctions_bySNP.pdf")
+#plot(gf, plot.type = "C", imp.vars = by.importance, show.overall = F, legend = T, leg.posn = "topleft", leg.nspecies = 5, cex.lab = 0.7, cex.legend = 0.4, cex.axis = 0.6, line.ylab = 0.9, par.args = list(mgp = c(1.5, 0.5, 0), mar = c(2.5, 1, 0.1, 0.5), omi = c(0, 0.3, 0, 0)))
+#dev.off()
 
 clim.land <- extract(clim.layer.crop, 1:ncell(clim.layer.crop), df = TRUE)
 clim.land <- na.omit(clim.land)
