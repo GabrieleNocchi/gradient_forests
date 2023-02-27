@@ -6,7 +6,7 @@ snp <- data.frame(fread(file), row.names=1)
 
 library(raster)
 library(rgdal)
-clim.list <- dir("/home/gabnoc/scratch/climate_data/", full.names=T, pattern='.tif')  #makes list of file paths for each layer
+clim.list <- dir("/home/gabnoc/projects/def-yeaman/gabnoc/GF/climate_data/", full.names=T, pattern='.tif')  #makes list of file paths for each layer
 clim.layer <-  stack(clim.list)  #stacks the layers into a single object
 
 v <- rownames(snp)
